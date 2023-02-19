@@ -1,0 +1,17 @@
+pipeline {
+    tools{
+        maven 'mymaven'
+    }
+    agent any
+    parameters { string(name: 'gitrepo', defaultValue: 'http://github.com/itonix/DevOpsCodeDemo.git', description: 'Default git repository')}
+    
+    stages{
+        stage('1.clone and compile'){
+            steps {
+                git "${params.gitrepo}"
+                echo 'CLONE REPOSITORY TO WORKSPACE'
+                
+                }
+        }
+    }
+}
