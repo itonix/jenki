@@ -1,3 +1,4 @@
+//Don't steal my jenki :)
 pipeline {
     tools{
         maven 'mymaven'
