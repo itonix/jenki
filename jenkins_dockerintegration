@@ -1,0 +1,39 @@
+pipeline {
+    tools{
+        maven 'mymaven'
+    }
+    agent any
+    stages{
+        
+        stage('package'){
+            steps {
+                git 'https://github.com/itonix/DevOpsCodeDemo.git'
+                echo 'Packaging to War package'
+                sh 'mvn clean'
+                sh 'mvn install'
+                sh 'mvn package'
+                }
+        }
+        stage('jenkins_docker'){
+            steps{
+           sh '''rm -rf mydockerfile
+mkdir mydockerfile
+cd mydockerfile
+cp /var/lib/jenkins/workspace/jenkins_dockerpipline/target/addressbook.war .
+touch dockerfile
+cat <<EOT>>dockerfile
+FROM tomcat:9
+ADD addressbook.war /usr/local/tomcat/webapps
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+EOT
+sudo docker build -t addressbook:$BUILD_NUMBER .
+sudo docker run -d -P addressbook:$BUILD_NUMBER'''
+            }
+                
+            }
+        
+        
+    }
+}
+
